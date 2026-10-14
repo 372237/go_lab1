@@ -22,15 +22,15 @@ type Training struct {
 func (t *Training) Parse(datastring string) (err error) {
 	parts := strings.Split(datastring, ",")
 	if len(parts) != 3 {
-		return fmt.Errorf("неверный формат данных: ожидается 3 поля, получено %d", len(parts))
+		return fmt.Errorf("invalid data format: expected 3 fields, got %d", len(parts))
 	}
 
 	steps, err := strconv.Atoi(parts[0])
 	if err != nil {
-		return fmt.Errorf("ошибка парсинга количества шагов: %w", err)
+		return fmt.Errorf("failed to parse steps: %w", err)
 	}
 	if steps <= 0 {
-		return fmt.Errorf("количество шагов должно быть положительным")
+		return fmt.Errorf("steps must be positive")
 	}
 	t.Steps = steps
 
@@ -38,10 +38,10 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	duration, err := time.ParseDuration(parts[2])
 	if err != nil {
-		return fmt.Errorf("ошибка парсинга длительности: %w", err)
+		return fmt.Errorf("failed to parse duration: %w", err)
 	}
 	if duration <= 0 {
-		return fmt.Errorf("продолжительность должна быть положительной")
+		return fmt.Errorf("duration must be positive")
 	}
 	t.Duration = duration
 
@@ -62,7 +62,7 @@ func (t Training) ActionInfo() (string, error) {
 	case "Ходьба":
 		calories, err = spentenergy.WalkingSpentCalories(t.Steps, t.Weight, t.Height, t.Duration)
 	default:
-		return "", fmt.Errorf("неизвестный тип тренировки")
+		return "", fmt.Errorf("unknown training type")
 	}
 
 	if err != nil {
